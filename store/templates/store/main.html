@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Martella</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    
+    <script type="text/javascript">
+        var user = '{{ request.user }}';
+
+        function getToken(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.split('=')[1]);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getToken('csrftoken');
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand brand-name" href="#">Martella</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto"></ul>
+            <div class="form-inline my-2 my-lg-0">
+                {% if user.is_authenticated %}
+                    <p class="text-white mr-3">Welcome, {{ user.username }}!</p>
+                    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-warning">Login</a>
+                    <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Sign Up</a>
+                {% endif %}
+                <a href="{% url 'cart' %}" class="cart-container">
+                    <img id="cart-icon" src="{% static 'images/cart.png' %}" class="cart-img">
+                    <span id="cart-total" class="cart-badge">{{ cartItems }}</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        {% block content %}{% endblock content %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+    
+    <style>
+        .brand-name {
+            font-size: 40px;
+            font-weight: bold;
+            color: yellow;
+        }
+        .cart-container {
+            position: relative;
+            display: inline-block;
+        }
+        .cart-img {
+            width: 40px;
+            height: auto;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .add-btn {
+            background-color: green;
+            color: white;
+        }
+        .view-btn {
+            background-color: blue;
+            color: white;
+        }
+    </style>
+</body>
+</html>
